@@ -1,0 +1,6 @@
+name = "my-dashboard"
+pages_build_output_dir = "public"
+compatibility_date = "2026-01-01"
+
+# לא לשים כאן משתני סביבה או סודות. את GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET ו־SESSION_SECRET מגדירים
+# בלוח הבקרה של Cloudflare (Settings, Variables and Secrets). קובץ זה מחליף את ההגדרות באותם שדות בלוח.

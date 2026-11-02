@@ -1,9 +1,9 @@
 ---
 name: "sheet-dashboard-vercel-google-login"
-description: "בונה דשבורד HTML מגיליון Google Sheets, מוגן בהתחברות Google (רק מי שיש לו גישה לגיליון), עם עריכה חזרה לגיליון, פריסה ל־GitHub ו־Vercel והסבר ל־Google Cloud."
+description: "בונה דשבורד HTML מגיליון Google Sheets, מוגן בהתחברות Google (רק מי שיש לו גישה לגיליון), עם עריכה חזרה לגיליון, פריסה ל־GitHub ול־Vercel או ל־Cloudflare Pages והסבר ל־Google Cloud. להשתמש גם כשמבקשים דשבורד או אתר מגיליון ומזכירים Cloudflare, Pages או pages.dev."
 ---
 
-# דשבורד מגיליון Google Sheets עם התחברות Google, GitHub ו־Vercel
+# דשבורד מגיליון Google Sheets עם התחברות Google, GitHub ו־Vercel או Cloudflare Pages
 
 מתכון מלא ליצירת דשבורד אינטראקטיבי מגיליון. הוא נבדק על דשבורד ״שכירות תאים״ ועל דשבורד התורמים. כל הטקסטים בדף בעברית, מימין לשמאל. את ההסברים למשתמש כותבים בעברית קצרה, שלב אחרי שלב.
 
@@ -11,7 +11,10 @@ description: "בונה דשבורד HTML מגיליון Google Sheets, מוגן 
 - דף `index.html` יחיד, בלי שלב בנייה, שקורא וכותב לגיליון ישירות דרך Sheets API באמצעות אסימון הגישה של המשתמש המחובר.
 - רק חשבון Google שיש לו גישה לגיליון יכול לראות. חשבון עם צפייה בלבד קורא אבל לא שומר. אין סיסמה ואין חשבון שירות.
 - התחברות ארוכת טווח: עוגייה מוצפנת ל־60 יום שמתחדשת בכל שימוש, כך שמכשיר שהתחבר נשאר מחובר.
-- ריפו ב־GitHub ופריסה ב־Vercel שמתעדכנת בכל דחיפה.
+- ריפו ב־GitHub ופריסה ב־Vercel או ב־Cloudflare Pages שמתעדכנת בכל דחיפה.
+
+## בחירת פלטפורמת פריסה
+Vercel היא ברירת המחדל. אם המשתמש מבקש Cloudflare Pages (או מזכיר `pages.dev`), לקרוא את `references/cloudflare-pages.md` ולהחליף בו שלושה דברים: קבצי השרת של שלב 2 (גרסת Workers מוכנה ב־`assets/cloudflare/`), הפריסה של שלב 5, והכתובות של שלב 6. כל השאר זהה: הגיליון, הדף, בדיקת הדף, GitHub והתחברות ארוכת טווח. אם לא ברור מה המשתמש רוצה ויש לו חשבונות בשתיהן, לשאול שאלה אחת קצרה. שם הסקיל נשאר כמו שהוא כדי לא לשבור התקנות קיימות.
 
 ## שלב 0: להבין את הגיליון
 1. למצוא את הקובץ ב־Drive. אם זה מסמך Docs ולא Sheets, ליצור גיליון חדש עם `mcp__Google_Drive__create_file` (סוג `application/vnd.google-apps.spreadsheet`) ולהעביר אליו את הנתונים. לפני יצירה או שינוי של גיליון לקרוא את ה־skill `anthropic-skills:google-workspace` ואת `references/sheets.md` שלו.
@@ -58,6 +61,7 @@ async function gFetch(path,opt,retried){
 כפתור התחברות: `location.href='/api/auth/login'`. התנתקות: `POST /api/auth/logout` עם הכותרת `X-Requested-With: dashboard`. שגיאות שגוגל מחזירה מגיעות ב־`?autherror=` ויש למפות אותן להודעות בעברית (`access_denied`, `missing_scope`, `state`, `no_refresh_token`, `invalid_client`, `server`). במצב `no_access` להציע ״התחברות עם חשבון אחר״ (התנתקות ואז `/api/auth/login`). בהתחלה לקרוא `/api/config`: אם אין `clientId`, להציג ״ההתחברות עוד לא מוגדרת״.
 
 ## שלב 2: קבצי השרת (Vercel Functions, CommonJS)
+(ל־Cloudflare Pages לא משתמשים בקבצים האלה. ראו `references/cloudflare-pages.md`.)
 לשים ב־`api/`. ללא תלויות חיצוניות, Node 20 ומעלה.
 
 `api/config.js`:
@@ -234,6 +238,7 @@ module.exports = async function (req, res) {
 - הודעות קומיט נגמרות בשורות השיוך (Co-Authored-By ו־Claude-Session) לפי מה שנקבע בשיחה.
 
 ## שלב 5: Vercel
+(ל־Cloudflare Pages: חלק ״פריסה״ ב־`references/cloudflare-pages.md`.)
 צוות ברירת המחדל: `shaarei`, מזהה `team_jsDc8N1DLmAHW1u7X3IwVqPI`.
 1. `create_git_project` עם `repo: geulah770/<name>`, ה־teamId ו־`provider: github`. אם הוא נכשל בשגיאת סכמה (קרה כך), **לא לנסות שוב בלי לבדוק**: ה־`get_project` ו־`list_projects` עם `repoUrl` מראים אם הפרויקט נוצר ומחובר.
 2. אם אין פריסה, ליצור פריסה ראשונה עם `create_deployment`: `target: "production"`, `skipAutoDetectionConfirmation: "1"`, ובגוף `projectSettings` עם כל השדות `null` ו־`gitSource` מסוג github עם `org`, `repo`, `ref: main` ו־`sha`. אחריה כל דחיפה ל־main פורסת אוטומטית.
@@ -243,6 +248,7 @@ module.exports = async function (req, res) {
 6. כתובת הפרודקשן: `<project>.vercel.app`.
 
 ## שלב 6: Google Cloud Console (ההסבר למשתמש)
+(ב־Cloudflare Pages הכתובת היא `https://<project>.pages.dev`, כפי שמופיעה בלוח הבקרה. שאר הצעדים זהים.)
 חשוב: **Client אחד מחזיק לכל היותר שני סודות**. אם המשתמש לא זוכר את הסוד של Client קיים, לא למחוק סוד, כי אחד מהם בשימוש של דשבורד אחר. ליצור **Client חדש לכל דשבורד**:
 1. להיכנס ל־console.cloud.google.com/auth/clients באותו פרויקט Google Cloud של הדשבורדים הקודמים (מסך ההסכמה משותף).
 2. לוודא ש־Google Sheets API מופעל (APIs & Services, ואז Library).

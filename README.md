@@ -4,13 +4,13 @@
 
 ## מטרה
 
-לאפשר ליצור בפשטות דשבורד אינטראקטיבי מגיליון Google Sheets, שרק מי שיש לו גישה לגיליון יכול לפתוח, לראות ולערוך בו. הסקילים כאן מרכזים את כל השלבים במקום אחד: מבנה הגיליון, הדף, ההתחברות, GitHub, Vercel והגדרות Google Cloud, כדי שבפעם הבאה אפשר יהיה לבקש מ־Claude ״בנה לי דשבורד מהגיליון הזה״ ולקבל אתר עובד.
+לאפשר ליצור בפשטות דשבורד אינטראקטיבי מגיליון Google Sheets, שרק מי שיש לו גישה לגיליון יכול לפתוח, לראות ולערוך בו. הסקילים כאן מרכזים את כל השלבים במקום אחד: מבנה הגיליון, הדף, ההתחברות, GitHub, Vercel או Cloudflare Pages והגדרות Google Cloud, כדי שבפעם הבאה אפשר יהיה לבקש מ־Claude ״בנה לי דשבורד מהגיליון הזה״ ולקבל אתר עובד.
 
 ## הסקילים
 
 | סקיל | מה הוא עושה |
 |---|---|
-| [`sheet-dashboard-vercel-google-login`](sheet-dashboard-vercel-google-login/SKILL.md) | בונה דשבורד מגיליון Google Sheets: התחברות עם Google (רק מי שיש לו גישה לגיליון), עריכה חזרה לגיליון, פריסה ל־GitHub ול־Vercel, הסבר להגדרת Google Cloud, והתחברות ארוכת טווח במכשיר. |
+| [`sheet-dashboard-vercel-google-login`](sheet-dashboard-vercel-google-login/SKILL.md) | בונה דשבורד מגיליון Google Sheets: התחברות עם Google (רק מי שיש לו גישה לגיליון), עריכה חזרה לגיליון, פריסה ל־GitHub ול־Vercel או ל־Cloudflare Pages, הסבר להגדרת Google Cloud, והתחברות ארוכת טווח במכשיר. |
 
 ## התקנה
 
@@ -41,13 +41,17 @@ cp -r dahbord_skills/sheet-dashboard-vercel-google-login ~/.claude/skills/
 
 > בנה לי דשבורד מהגיליון הזה, עם התחברות Google ופריסה ל־Vercel
 
+או, לפריסה ב־Cloudflare:
+
+> בנה לי דשבורד מהגיליון הזה, עם התחברות Google ופריסה ל־Cloudflare Pages
+
 Claude יטען את הסקיל וילך איתך שלב אחר שלב.
 
 ## מה צריך להכין מראש
 
 - גיליון Google Sheets (או קובץ שאפשר להפוך לגיליון).
 - חשבון GitHub, וריפו ריק לדשבורד.
-- חשבון Vercel מחובר ל־GitHub.
+- חשבון Vercel מחובר ל־GitHub, או חשבון Cloudflare (Pages) אם מעדיפים לפרוס שם.
 - פרויקט ב־Google Cloud, שבו יוגדר OAuth Client. ההסבר המלא בתוך הסקיל.
 - חיבורים (Connectors) ל־Google Drive, Google Sheets ו־Vercel ב־Claude, כדי שהוא יוכל ליצור ולפרוס בשבילך.
 
