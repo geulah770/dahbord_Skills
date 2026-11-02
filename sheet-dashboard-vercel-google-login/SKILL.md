@@ -91,9 +91,10 @@ function seal(obj) {
   return Buffer.concat([iv, c.getAuthTag(), enc]).toString('base64url');
 }
 function open(str) {
+  const k = key(); // מחוץ ל־try: SESSION_SECRET חסר צריך להיכשל בקול (500) ולא להיראות כהתנתקות (401)
   try {
     const b = Buffer.from(str, 'base64url');
-    const d = crypto.createDecipheriv('aes-256-gcm', key(), b.subarray(0, 12));
+    const d = crypto.createDecipheriv('aes-256-gcm', k, b.subarray(0, 12));
     d.setAuthTag(b.subarray(12, 28));
     return JSON.parse(Buffer.concat([d.update(b.subarray(28)), d.final()]).toString('utf8'));
   } catch (e) { return null; }
